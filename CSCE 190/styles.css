@@ -13,6 +13,7 @@ body {
 .assignment img {
     width:200px;
     padding:10px;
+    background: rgb(0, 88, 88);
 }
 
 h1 {
