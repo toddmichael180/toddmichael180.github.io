@@ -1081,23 +1081,6 @@ prx.types.symbol = {
                     rerender: true
                 }
             },{
-                caption: 'Propagate events in empty areas'
-                ,name: 'propagateevents'
-                ,type: 'onoff'
-                ,value: function(item,name) {
-                    if(typeof(item.propagateevents) == 'undefined') {
-                        return false;
-                    }
-                    return item.propagateevents;
-                }
-                ,hiddenByDefault: function(item){
-                    return (item.scroll!='' && item.scroll!='none');
-                }
-                ,changeProperty: {
-                    caption: 'Propagate events',
-                    rerender: true
-                }
-            },{
                 caption: 'Background'
                 ,name: 'background'
                 ,proptype: 'background-color'
@@ -1218,7 +1201,30 @@ prx.types.symbol = {
                 }
             }
 	      	]]
-	    }
+	    },
+        {
+            caption: 'Advanced',
+            properties: [[
+                {
+                    caption: 'Propagate events in empty areas'
+                    ,name: 'propagateevents'
+                    ,type: 'onoff'
+                    ,value: function(item,name) {
+                        if(typeof(item.propagateevents) == 'undefined') {
+                            return false;
+                        }
+                        return item.propagateevents;
+                    }
+                    ,hiddenByDefault: function(item){
+                        return (item.scroll!='' && item.scroll!='none');
+                    }
+                    ,changeProperty: {
+                        caption: 'Propagate events',
+                        rerender: true
+                    }
+                }
+            ]]
+        }
     ]
 };
 
@@ -3871,6 +3877,7 @@ prx.types.image = {
             ]
         },
         {
+            id: 'mask-settings',
             properties: [
                 [
                     {
@@ -5859,45 +5866,46 @@ prx.types.vectoranimation = {
         prx.vectorCreated = [];
 
         if(prx.editor){
-            if(prx.componentsHelper.getProp(item.imgSrc.fileId,'other') != '') {
+            if (prx.componentsHelper.getProp(item.imgSrc.fileId, 'other') != '') {
                 if (!$div.hasClass('missing') && !_isUploading) {
-
                     var anim = lottie.registerAnimation($div[0]);
 
-                    anim.addEventListener('DOMLoaded', function () {
-                        $div.find('#playVectorAnimationprop').addClass('disabled');
-                        anim.goToAndStop(1, true);
+                    if (anim !== null) {
+                        anim.addEventListener('DOMLoaded', function () {
+                            $div.find('#playVectorAnimationprop').addClass('disabled');
+                            anim.goToAndStop(1, true);
 
-                        if(_onCreate) {
-                            prx.bodymovinAnimation.playbackConsole ({
-                                playbackType: 'play', target: {search: false, dataName: _id},
-                                onCompleteEvent: function event() {
-                                    $('#' + _id).find('#playVectorAnimationprop').removeClass('disabled');
-                                    this.goToAndStop(1, true);
-                                },
-                                // onDomLoadedEvent: function event() {
-                                //    $div.find('#playVectorAnimationprop').addClass('pause');
-                                //    if (callback != null) {
-                                //        callback();
-                                //    }
-                                // },
-                                // onDomLoadedFailedEvent: function event() {
-                                //    if (callback != null) {
-                                //        callback();
-                                //    }
-                                // }
-                            });
-                        }
+                            if (_onCreate) {
+                                prx.bodymovinAnimation.playbackConsole({
+                                    playbackType: 'play', target: {search: false, dataName: _id},
+                                    onCompleteEvent: function event() {
+                                        $('#' + _id).find('#playVectorAnimationprop').removeClass('disabled');
+                                        this.goToAndStop(1, true);
+                                    },
+                                    // onDomLoadedEvent: function event() {
+                                    //    $div.find('#playVectorAnimationprop').addClass('pause');
+                                    //    if (callback != null) {
+                                    //        callback();
+                                    //    }
+                                    // },
+                                    // onDomLoadedFailedEvent: function event() {
+                                    //    if (callback != null) {
+                                    //        callback();
+                                    //    }
+                                    // }
+                                });
+                            }
 
-                        if (callback != null) {
-                            callback();
-                        }
-                    });
-                    anim.addEventListener('data_failed', function () {
-                        if (callback != null) {
-                            callback();
-                        }
-                    });
+                            if (callback != null) {
+                                callback();
+                            }
+                        });
+                        anim.addEventListener('data_failed', function () {
+                            if (callback != null) {
+                                callback();
+                            }
+                        });
+                    }
 
                 }
                 else if (_isUploading && _animationData) {
